@@ -1,5 +1,10 @@
 import React from "react";
-const Homepage = () => {
-    return <h1>Welcome to the Homepage</h1>;
+import Header from "../../components/header";
+const Homepage = () => {    
+    return (
+        <main>
+            <Header/>
+        </main>
+    );
 };
 export default Homepage;
