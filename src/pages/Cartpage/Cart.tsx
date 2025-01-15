@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Header from "../../components/header";
-import CartItem from "../../components/CartItem";
+import CartProduct from "../../components/CartProduct";
 import { Product } from "../../types/Product";
 
 const Cart: React.FC = () => {
@@ -162,7 +162,7 @@ const Cart: React.FC = () => {
               {/* Danh sách sản phẩm */}
               <div className="mb-4">
                 {cart.map((product) => (
-                  <CartItem
+                  <CartProduct
                     key={product.id}
                     product={product}
                     onIncrease={handleIncrease}
