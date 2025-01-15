@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Header from "../../components/header";
-import CartProduct from "../../components/CartProduct";
+import CartProduct from ".CartProduct";
 import { Product } from "../../types/Product";
 
 const Cart: React.FC = () => {
