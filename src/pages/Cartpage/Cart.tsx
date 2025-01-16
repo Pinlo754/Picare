@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Header from "../../components/header";
 import CartProduct from "./CartProduct";
-import { Product } from "./IProduct";
+
+import { Footer } from "../../components/Footer";
 
 const Cart: React.FC = () => {
-  const [cart, setCart] = useState<Product[]>([
+  const [cart, setCart] = useState([
     {
       id: "1",
-      name: "Sản phẩm 1",
+      title: "Sản phẩm 1",
       price: 100000,
       quantity: 1,
       stock: 10,
@@ -15,7 +16,7 @@ const Cart: React.FC = () => {
     },
     {
       id: "2",
-      name: "Sản phẩm 2",
+      title: "Sản phẩm 2",
       price: 150000,
       quantity: 1,
       stock: 5,
@@ -270,7 +271,7 @@ const Cart: React.FC = () => {
                     {totalCartPrice.toLocaleString()}₫
                   </span>
                 </button>
-                <span className="text-sm text-gray-500 italic mt-1 justify-center">
+                <span className="text-sm text-gray-500 italic mt-1 center">
                   (Đã bao gồm VAT nếu có)
                 </span>
               </div>
@@ -278,6 +279,7 @@ const Cart: React.FC = () => {
           </>
         )}
       </div>
+      <Footer/>
     </div>
   );
 };
