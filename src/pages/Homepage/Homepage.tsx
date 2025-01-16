@@ -3,11 +3,12 @@ import Product from "../../components/Product/Product";
 import CategorySlide from "../../components/CategorySlider/CategorySlide";
 import Banner from "../../components/Banner/Banner";
 import {ArrowForwardIos} from "@mui/icons-material";
-
+import Header from "../../components/header";
 const Homepage = () => {
 
     return (
         <>
+        <Header/>
             <Banner/>
             <CategorySlide/>
             <h2 className={"text-2xl font-bold text-center mb-1 mt-5"}>Chăm sóc chuẩn salon</h2>
