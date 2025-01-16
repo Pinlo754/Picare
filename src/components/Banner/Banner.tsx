@@ -3,7 +3,7 @@ import {Autoplay, Mousewheel} from "swiper/modules";
 const Banner= () => {
     return (
         <div>
-            <div className="p-1.5">
+            <div className="p-1.5 mt-5">
                 <Swiper
                     modules={[Autoplay, Mousewheel]}
                     slidesPerView={1}

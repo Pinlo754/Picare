@@ -136,7 +136,10 @@ const Homepage = () => {
                         image={"https://product.hstatic.net/1000097940/product/30_31423e0dd7ee4049829304085b31358f_grande.png"}
                     />
                 </div>
-
+                <button className={"px-4 py-2 rounded-2xl font-bold text-base bg-green-500 text-white "}>
+                    Xem tất cả
+                    <ArrowForwardIos/>
+                </button>
             </div>
             <CareBanner/>
             <BlogSlide/>
