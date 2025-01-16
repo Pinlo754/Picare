@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Product } from "./IProduct";
+import { Product } from "../../types/ProductTypes";
 
 interface CartItemProps {
   product: Product;
@@ -62,7 +62,7 @@ const CartProduct: React.FC<CartItemProps> = ({
       {/* Hình ảnh sản phẩm */}
       <img
         src={product.image}
-        alt={product.name}
+        alt={product.title}
         className="w-16 h-16 object-cover mr-4"
       />
 
@@ -70,7 +70,7 @@ const CartProduct: React.FC<CartItemProps> = ({
       <div className="flex-grow">
         <div 
           className="text-sm font-semibold text-gray-800"
-          title="{product.name}">{product.name}</div>
+          title="{product.name}">{product.title}</div>
         <div className="text-sm text-red-500 font-bold">
           {totalPrice.toLocaleString()}₫ {/* Hiển thị tổng giá */}
         </div>
