@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Header from "../../components/header";
-import CartProduct from ".CartProduct";
-import { Product } from "../../types/Product";
+import CartProduct from "./CartProduct";
+import { Product } from "./IProduct";
 
 const Cart: React.FC = () => {
   const [cart, setCart] = useState<Product[]>([
@@ -64,6 +63,14 @@ const Cart: React.FC = () => {
     );
   };
 
+  const handleUpdateQuantity = (id: string, quantity: number) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, quantity: quantity } : item
+      )
+    );
+  };
+
   // Xử lý xóa sản phẩm khỏi giỏ hàng
   const handleRemove = (id: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
@@ -77,44 +84,7 @@ const Cart: React.FC = () => {
 
   // Gửi đơn hàng đến Haravan API
   const handleSubmitOrder = async () => {
-    try {
-      // Tạo dữ liệu đơn hàng
-      const orderData = {
-        order: {
-          line_items: cart.map((item) => ({
-            product_id: item.id, // ID sản phẩm
-            quantity: item.quantity, // Số lượng
-            price: item.price, // Giá sản phẩm
-          })),
-          note: note, // Ghi chú đơn hàng
-          billing_address: {
-            company: invoiceInfo.companyName,
-            tax_code: invoiceInfo.taxCode,
-            address: invoiceInfo.address,
-            email: invoiceInfo.email,
-          },
-        },
-      };
-
-      // Gửi yêu cầu POST đến Haravan API
-      const response = await axios.post(
-        "https://apis.haravan.com/com/orders.json",
-        orderData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer YOUR_ACCESS_TOKEN", // Thay YOUR_ACCESS_TOKEN bằng Access Token của bạn
-          },
-        }
-      );
-
-      // Xử lý phản hồi từ API
-      console.log("Order created successfully:", response.data);
-      alert("Đơn hàng đã được tạo thành công!");
-    } catch (error) {
-      console.error("Error creating order:", error);
-      alert("Đã xảy ra lỗi khi tạo đơn hàng.");
-    }
+    alert("Đơn hàng sẽ được tạo.");
   };
 
   return (
@@ -168,12 +138,15 @@ const Cart: React.FC = () => {
                     onIncrease={handleIncrease}
                     onDecrease={handleDecrease}
                     onRemove={handleRemove}
+                    onUpdateQuantity={handleUpdateQuantity}
                   />
                 ))}
               </div>
 
               {/* Ghi chú đơn hàng */}
               <textarea
+                id="order-note"
+                name="orderNote"
                 className="w-full p-2 border border-gray-300 rounded mb-4"
                 placeholder="Ghi chú đơn hàng"
                 value={note}
@@ -185,6 +158,7 @@ const Cart: React.FC = () => {
                 <input
                   type="checkbox"
                   id="invoice"
+                  name="invoice"
                   className="mr-2"
                   checked={isInvoiceRequested}
                   onChange={(e) => setIsInvoiceRequested(e.target.checked)}
@@ -206,7 +180,8 @@ const Cart: React.FC = () => {
                     type="text"
                     id="companyName"
                     name="companyName"
-                    className="w-full p-2 border border-gray-300 rounded"
+                    autoComplete="organization"
+                    className="w-full p-2 bg-transparent border border-gray-300 rounded outline-none"
                     placeholder="Tên công ty"
                     value={invoiceInfo.companyName}
                     onChange={handleInvoiceInfoChange}
@@ -221,7 +196,8 @@ const Cart: React.FC = () => {
                     type="text"
                     id="taxCode"
                     name="taxCode"
-                    className="w-full p-2 border border-gray-300 rounded"
+                    autoComplete="tax-id"
+                    className="w-full p-2 bg-transparent border border-gray-300 rounded outline-none"
                     placeholder="Mã số thuế"
                     value={invoiceInfo.taxCode}
                     onChange={handleInvoiceInfoChange}
@@ -235,7 +211,8 @@ const Cart: React.FC = () => {
                   <textarea
                     id="address"
                     name="address"
-                    className="w-full p-2 border border-gray-300 rounded"
+                    autoComplete="address"
+                    className="w-full p-2 bg-transparent border border-gray-300 rounded outline-none"
                     placeholder="Nhập địa chỉ công ty (bao gồm Phường/Xã, Quận/Huyện, Tỉnh/Thành phố nếu có)"
                     value={invoiceInfo.address}
                     onChange={handleInvoiceInfoChange}
@@ -250,7 +227,8 @@ const Cart: React.FC = () => {
                     type="email"
                     id="email"
                     name="email"
-                    className="w-full p-2 border border-gray-300 rounded"
+                    autoComplete="email"
+                    className="w-full p-2 bg-transparent border border-gray-300 rounded outline-none"
                     placeholder="Email nhận hóa đơn"
                     value={invoiceInfo.email}
                     onChange={handleInvoiceInfoChange}
