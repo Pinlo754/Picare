@@ -3,6 +3,7 @@ import Product from "../../components/Product/Product";
 import CategorySlide from "../../components/CategorySlider/CategorySlide";
 import Banner from "../../components/Banner/Banner";
 import {ArrowForwardIos} from "@mui/icons-material";
+import Header from "../../components/header";
 import CareBanner from "../../components/CareBanner/CareBanner";
 import BlogSlide from "../../components/BlogSlide/BlogSlide";
 
@@ -10,6 +11,7 @@ const Homepage = () => {
 
     return (
         <>
+        <Header/>
             <Banner/>
             <CategorySlide/>
             {/*Chăm sóc chuẩn salon */ }
