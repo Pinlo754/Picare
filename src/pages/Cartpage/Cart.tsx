@@ -1,26 +1,56 @@
 import React, { useState } from "react";
 import Header from "../../components/header";
 import CartProduct from "./CartProduct";
-
 import { Footer } from "../../components/Footer";
+import { Product } from "../../types/ProductTypes";
 
 const Cart: React.FC = () => {
-  const [cart, setCart] = useState([
+  const [cart, setCart] = useState<Product[]>([
     {
       id: "1",
       title: "Sản phẩm 1",
-      price: 100000,
-      quantity: 1,
-      stock: 10,
-      image: "",
+      handle: "san-pham-1",
+      product_type: "Điện thoại",
+      tags: "tag1,tag2",
+      variants: [
+        {
+          id: "101",
+          title: "Biến thể 1",
+          price: 100000,
+          compare_at_price: 120000,
+          sku: "SKU-001",
+          barcode: "123456789",
+          inventory_quantity: 10,
+          inventory_policy: "deny",
+          requires_shipping: true,
+          taxable: true,
+        },
+      ],
+      images: [{ src: "" }],
+      description: "Mô tả sản phẩm 1",
     },
     {
       id: "2",
       title: "Sản phẩm 2",
-      price: 150000,
-      quantity: 1,
-      stock: 5,
-      image: "",
+      handle: "san-pham-2",
+      product_type: "Điện thoại",
+      tags: "tag3,tag4",
+      variants: [
+        {
+          id: "102",
+          title: "Biến thể 1",
+          price: 150000,
+          compare_at_price: 180000,
+          sku: "SKU-002",
+          barcode: "987654321",
+          inventory_quantity: 5,
+          inventory_policy: "deny",
+          requires_shipping: true,
+          taxable: true,
+        },
+      ],
+      images: [{ src: "" }],
+      description: "Mô tả sản phẩm 2",
     },
   ]);
 
@@ -35,19 +65,28 @@ const Cart: React.FC = () => {
 
   // Tính tổng giá trị của giỏ hàng
   const totalCartPrice = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + (item.variants[0]?.price || 0) * (item.variants[0]?.inventory_quantity || 0),
     0
   );
 
   // Tính tổng số lượng sản phẩm trong giỏ hàng
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = cart.reduce(
+    (total, item) => total + (item.variants[0]?.inventory_quantity || 0),
+    0
+  );
 
   // Xử lý tăng số lượng sản phẩm
   const handleIncrease = (id: string) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === id
-          ? { ...item, quantity: Math.min(item.quantity + 1, item.stock) }
+          ? {
+            ...item,
+            variants: item.variants.map((variant) => ({
+              ...variant,
+              inventory_quantity: Math.min(variant.inventory_quantity + 1, 10),
+            })),
+          }
           : item
       )
     );
@@ -57,8 +96,14 @@ const Cart: React.FC = () => {
   const handleDecrease = (id: string) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: Math.max(item.quantity - 1, 1) }
+        item.id === id
+          ? {
+            ...item,
+            variants: item.variants.map((variant) => ({
+              ...variant,
+              inventory_quantity: Math.max(variant.inventory_quantity - 1, 1),
+            })),
+          }
           : item
       )
     );
@@ -67,7 +112,15 @@ const Cart: React.FC = () => {
   const handleUpdateQuantity = (id: string, quantity: number) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: quantity } : item
+        item.id === id
+          ? {
+            ...item,
+            variants: item.variants.map((variant) => ({
+              ...variant,
+              inventory_quantity: quantity,
+            })),
+          }
+          : item
       )
     );
   };
@@ -78,20 +131,70 @@ const Cart: React.FC = () => {
   };
 
   // Xử lý thay đổi thông tin xuất hóa đơn
-  const handleInvoiceInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInvoiceInfoChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setInvoiceInfo((prev) => ({ ...prev, [name]: value }));
+
+    // Kiểm tra lỗi
+    if (isInvoiceRequested) {
+      setInvoiceErrors((prev) => ({
+        ...prev,
+        [name]: validateInvoiceField(name, value),
+      }));
+    }
   };
 
-  // Gửi đơn hàng đến Haravan API
+  // lưu các thông báo lỗi cho từng trường trong form xuất hóa đơn công ty
+  const [invoiceErrors, setInvoiceErrors] = useState({
+    companyName: "",
+    taxCode: "",
+    address: "",
+    email: "",
+  });
+
+  // kiểm tra lỗi khi nhập liệu và khi gửi form xuất hóa đơn công ty
+  const validateInvoiceField = (name: string, value: string) => {
+    if (!value.trim()) {
+      return "Bạn không được để trống trường này";
+    }
+    if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
+      return "Email không hợp lệ";
+    }
+    return "";
+  };
+
+  // kiểm tra toàn bộ form xuất hóa đơn công ty
+  const validateInvoiceInfo = () => {
+    const errors: typeof invoiceErrors = {
+      companyName: "",
+      taxCode: "",
+      address: "",
+      email: "",
+    };
+
+    if (isInvoiceRequested) {
+      for (const [name, value] of Object.entries(invoiceInfo)) {
+        errors[name as keyof typeof invoiceErrors] = validateInvoiceField(name, value);
+      }
+    }
+
+    setInvoiceErrors(errors);
+
+    return Object.values(errors).every((error) => !error); // Trả về true nếu không có lỗi
+  };
+
+  // Gửi đơn hàng đến trang checkout
   const handleSubmitOrder = async () => {
-    alert("Đơn hàng sẽ được tạo.");
+    if (validateInvoiceInfo()) {
+      alert("Đến trang checkout.");
+    }   
   };
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-
 
       <div className="bg-gray-100 px-4 py-2 text-sm text-gray-600 mb-4">
         <a
@@ -129,7 +232,7 @@ const Cart: React.FC = () => {
           </div>
         ) : (
           <>
-            <form action="/cart" method="post">
+            <form action="/checkout" method="post">
               {/* Danh sách sản phẩm */}
               <div className="mb-4">
                 {cart.map((product) => (
@@ -171,8 +274,7 @@ const Cart: React.FC = () => {
 
               {/* Form xuất hóa đơn */}
 
-              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isInvoiceRequested ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                } space-y-4 mb-4`}>
+              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isInvoiceRequested ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} space-y-4 mb-4`}>
                 <div>
                   <label htmlFor="companyName" className="block text-sm font-medium text-gray-700">
                     Tên công ty
@@ -187,6 +289,9 @@ const Cart: React.FC = () => {
                     value={invoiceInfo.companyName}
                     onChange={handleInvoiceInfoChange}
                   />
+                  {invoiceErrors.companyName && (
+                    <p className="text-red-500 text-sm mt-1">{invoiceErrors.companyName}</p>
+                  )}
                 </div>
 
                 <div>
@@ -203,6 +308,9 @@ const Cart: React.FC = () => {
                     value={invoiceInfo.taxCode}
                     onChange={handleInvoiceInfoChange}
                   />
+                  {invoiceErrors.taxCode && (
+                    <p className="text-red-500 text-sm mt-1">{invoiceErrors.taxCode}</p>
+                  )}
                 </div>
 
                 <div>
@@ -218,6 +326,9 @@ const Cart: React.FC = () => {
                     value={invoiceInfo.address}
                     onChange={handleInvoiceInfoChange}
                   ></textarea>
+                  {invoiceErrors.address && (
+                    <p className="text-red-500 text-sm mt-1">{invoiceErrors.address}</p>
+                  )}
                 </div>
 
                 <div>
@@ -234,6 +345,9 @@ const Cart: React.FC = () => {
                     value={invoiceInfo.email}
                     onChange={handleInvoiceInfoChange}
                   />
+                  {invoiceErrors.email && (
+                    <p className="text-red-500 text-sm mt-1">{invoiceErrors.email}</p>
+                  )}
                 </div>
               </div>
 
@@ -247,13 +361,13 @@ const Cart: React.FC = () => {
               </button>
 
               {/* Phương thức thanh toán */}
-              <div className="justify-center space-x-4 mb-20">
+              <div className="mb-10">
                 <h3 className="text-lg font-bold mb-2">Phương thức thanh toán</h3>
-                <a href="/">
+                <a href="/" className="block">
                   <img
                     src="//theme.hstatic.net/1000097940/1000899682/14/footer_trustbadge.jpg?v=276"
                     alt="Paid methods"
-                    className="w-245 h-53"
+                    className="w-60 h-auto"
                   />
                 </a>
               </div>
@@ -279,7 +393,7 @@ const Cart: React.FC = () => {
           </>
         )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
