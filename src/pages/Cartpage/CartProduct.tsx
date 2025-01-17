@@ -16,25 +16,33 @@ const CartProduct: React.FC<CartItemProps> = ({
   onRemove,
   onUpdateQuantity,
 }) => {
-  const [tempQuantity, setTempQuantity] = useState<string>(product.quantity.toString()); // Lưu giá trị nhập liệu dạng chuỗi
+  // Trích xuất thông tin từ biến thể đầu tiên
+  const variant = product.variants[0]; // Sử dụng biến thể đầu tiên
+  const [tempQuantity, setTempQuantity] = useState<string>(
+    variant.inventory_quantity.toString()
+  );
 
   useEffect(() => {
-    setTempQuantity(product.quantity.toString());
-  }, [product.quantity]);
-  
+    setTempQuantity(variant.inventory_quantity.toString());
+  }, [variant.inventory_quantity]);
+
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTempQuantity(e.target.value); // Cho phép xóa hoặc nhập lại số
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setTempQuantity(value);
+    } // Cho phép xóa hoặc nhập lại số
+    
   };
 
   const handleBlurOrEnter = () => {
     const quantity = parseInt(tempQuantity, 10); // Chuyển chuỗi sang số
 
-    if (isNaN(quantity) || quantity === 0) {
-      // Nếu không nhập gì hoặc nhập 0 → Xóa sản phẩm
+    if (isNaN(quantity) || quantity <= 0) {
+      // Nếu không nhập gì hoặc nhập bé hơn hoặc bằng 0 → Xóa sản phẩm
       onRemove(product.id);
-    } else if (quantity > product.stock) {
+    } else if (variant && quantity > variant.inventory_quantity) {
       // Nếu số lượng lớn hơn tồn kho → Đặt số lượng = tồn kho
-      onUpdateQuantity(product.id, product.stock);
+      onUpdateQuantity(product.id, variant.inventory_quantity);
     } else {
       // Nếu số hợp lệ (1 → stock) → Cập nhật số lượng
       onUpdateQuantity(product.id, quantity);
@@ -43,7 +51,8 @@ const CartProduct: React.FC<CartItemProps> = ({
     setTempQuantity(""); // Reset giá trị tạm thời
   };
 
-  const totalPrice = product.price * product.quantity; // Tính tổng giá
+  const totalPrice = variant.price * parseInt(tempQuantity || "0", 10); // Tính tổng giá
+  const productImage = product.images[0]?.src || ""; // Lấy ảnh đầu tiên
 
   return (
     <div className="flex items-center justify-between py-2 border-b border-gray-200">
@@ -52,7 +61,7 @@ const CartProduct: React.FC<CartItemProps> = ({
         type="button"
         className="text-red-500 text-lg font-bold mr-2"
         onClick={(e) => {
-          e.preventDefault(); 
+          e.preventDefault();
           onRemove(product.id)
         }}
       >
@@ -61,16 +70,16 @@ const CartProduct: React.FC<CartItemProps> = ({
 
       {/* Hình ảnh sản phẩm */}
       <img
-        src={product.image}
+        src={productImage}
         alt={product.title}
         className="w-16 h-16 object-cover mr-4"
       />
 
       {/* Thông tin sản phẩm */}
       <div className="flex-grow">
-        <div 
+        <div
           className="text-sm font-semibold text-gray-800"
-          title="{product.name}">{product.title}</div>
+          title={product.title}>{product.title}</div>
         <div className="text-sm text-red-500 font-bold">
           {totalPrice.toLocaleString()}₫ {/* Hiển thị tổng giá */}
         </div>
@@ -81,14 +90,16 @@ const CartProduct: React.FC<CartItemProps> = ({
         {/* Nút giảm số lượng */}
         <button
           type="button"
-          className={`w-8 h-8 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100 flex justify-center items-center ${
-            product.quantity === 1 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`w-8 h-8 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100 flex justify-center items-center 
+              ${parseInt(tempQuantity, 10) === 1 
+                ? "opacity-50 cursor-not-allowed" 
+                : ""
+            }`}
           onClick={(e) => {
             e.preventDefault();
             onDecrease(product.id);
           }}
-          disabled={product.quantity === 1}
+          disabled={parseInt(tempQuantity, 10) === 1}
         >
           −
         </button>
@@ -111,15 +122,18 @@ const CartProduct: React.FC<CartItemProps> = ({
         <button
           type="button"
           className={`w-8 h-8 border border-gray-300 rounded-full text-gray-600 hover:bg-gray-100 flex justify-center items-center ${
-            product.quantity === product.stock
+            variant && parseInt(tempQuantity, 10) === variant.inventory_quantity
               ? "opacity-50 cursor-not-allowed"
               : ""
-          }`}
+            }`}
           onClick={(e) => {
             e.preventDefault();
             onIncrease(product.id);
           }}
-          disabled={product.quantity === product.stock}
+          disabled={
+            variant &&
+            parseInt(tempQuantity, 10) === variant.inventory_quantity
+          }
         >
           +
         </button>
