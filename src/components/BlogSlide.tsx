@@ -1,14 +1,15 @@
-﻿import Blog from "../Blog/Blog";
+﻿import Blog from "./Blog";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, Mousewheel} from "swiper/modules";
 import blogs from "./blogs.json"
 import React from "react";
 import {ArrowForwardIos} from "@mui/icons-material";
+
 const BlogSlide = () => {
 
     return (
         <div className={"place-items-center"}>
-            <h2 className="text-2xl font-bold text-center mb-6">TIN TỨC LÀM ĐẸP</h2>
+            <h2 className="text-2xl font-title text-center mb-6">TIN TỨC LÀM ĐẸP</h2>
             <Swiper
                 modules={[Autoplay, Mousewheel]}
                 slidesPerView={1}

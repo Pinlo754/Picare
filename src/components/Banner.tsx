@@ -1,6 +1,7 @@
 ﻿import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay, Mousewheel} from "swiper/modules";
-const Banner= () => {
+
+const Banner = () => {
     return (
         <div>
             <div className="p-1.5 mt-5">
@@ -14,13 +15,16 @@ const Banner= () => {
                     mousewheel
                 >
                     <SwiperSlide>
-                        <img src={"//theme.hstatic.net/1000097940/1000899682/14/slider_1.jpg?v=276"} alt={"1"} className="mx-auto "/>
+                        <img src={"//theme.hstatic.net/1000097940/1000899682/14/slider_1.jpg?v=276"} alt={"1"}
+                             className="mx-auto "/>
                     </SwiperSlide>
                     <SwiperSlide>
-                        <img src={"//theme.hstatic.net/1000097940/1000899682/14/slider_2.jpg?v=276"} alt={"1"} className="mx-auto"/>
+                        <img src={"//theme.hstatic.net/1000097940/1000899682/14/slider_2.jpg?v=276"} alt={"1"}
+                             className="mx-auto"/>
                     </SwiperSlide>
                     <SwiperSlide>
-                        <img src={"//theme.hstatic.net/1000097940/1000899682/14/slider_3.jpg?v=276"} alt={"1"} className="mx-auto"/>
+                        <img src={"//theme.hstatic.net/1000097940/1000899682/14/slider_3.jpg?v=276"} alt={"1"}
+                             className="mx-auto"/>
                     </SwiperSlide>
                 </Swiper>
             </div>

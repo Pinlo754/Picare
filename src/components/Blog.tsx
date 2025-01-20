@@ -16,14 +16,14 @@ const Blog = (props: any) => {
                 {/* Title */}
                 <span className={"font-bold"}>{title}</span>
                 {/* Author */}
-                <div >
+                <div>
                     <span className={"text-gray-700 text-sm uppercase mb-1"}>{author} - </span>
                     <span className={"text-gray-400 text-sm font-semibold mb-2"}>{date}</span>
                 </div>
 
                 {/* Chi tiet */}
                 <ReactMarkdown className={"text-gray-800 text-base font-semibold mb-2 line-clamp-2"}>
-                {description}
+                    {description}
                 </ReactMarkdown>
             </div>
         </>
