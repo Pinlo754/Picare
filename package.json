@@ -1,12 +1,13 @@
 {
+  "proxy": "https://apis.haravan.com",
   "name": "ticket-resell",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.7.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/icons-material": "^6.3.1",
@@ -19,7 +20,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@types/react-router-dom": "^5.3.3",
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "firebase": "^11.0.0",
     "framer-motion": "^11.11.8",
     "react": "^18.3.1",
@@ -33,6 +34,7 @@
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.8.0",
     "swiper": "^11.2.1",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
@@ -70,6 +72,5 @@
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.13",
     "ts-node": "^10.9.2"
-  },
-  "proxy": "http://localhost:5158"
+  }
 }
