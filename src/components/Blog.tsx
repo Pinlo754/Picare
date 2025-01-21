@@ -1,6 +1,7 @@
-﻿import ReactMarkdown from "react-markdown";
+﻿import React from "react";
+import ReactMarkdown from "react-markdown";
 
-const Blog = (props: any) => {
+const Blog = (props:any) => {
     let title: string = props.title;
     let author: string = props.author;
     let date: string = props.date;

@@ -15,7 +15,7 @@
     left: 50%; /* Đẩy sang giữa chiều rộng */
     transform: translate(-50%, -50%); /* Căn giữa hoàn toàn */
     color: black; /* Màu chữ */
-    font-size: 14px; /* Kích thước chữ */
+    font-size: 12px; /* Kích thước chữ */
     z-index: 1; /* Đảm bảo nằm trên thanh tiến trình */
     pointer-events: none; /* Không ảnh hưởng khi click vào */
     text-align: center;

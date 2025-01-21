@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import "zmp-ui/zaui.css";
 
 function App() {
   return (

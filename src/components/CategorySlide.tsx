@@ -1,8 +1,10 @@
-﻿import React from 'react';
-import {Swiper, SwiperSlide} from "swiper/react";
-import {Navigation} from "swiper/modules";
-import 'swiper/css';
-import 'swiper/css/navigation';
+﻿import { Swiper } from "zmp-ui"
+import Slider from "react-slick"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css";
+
+
+import React from "react"
 const categories = [
     {name: "Sữa Rửa Mặt", url: "//theme.hstatic.net/1000097940/1000899682/14/coll_1.jpg?v=276"},
     {name: "Tẩy Trang", url: "//theme.hstatic.net/1000097940/1000899682/14/coll_2.jpg?v=276"},
@@ -16,31 +18,27 @@ const categories = [
     {name: "Dưỡng trắng", url: "//theme.hstatic.net/1000097940/1000899682/14/coll_10.jpg?v=276"}
 ]
 const CategorySlide = () => {
+    const settings = {
+        dots: false, // Hiển thị các chấm điều hướng
+        infinite: true, // Vòng lặp vô hạn
+        speed: 500, // Thời gian chuyển slide
+        slidesToShow: 4, // Số slide hiển thị cùng lúc
+        slidesToScroll: 1, // Số slide cuộn khi lướt
+        autoplay: true, // Tự động chuyển slide
+        autoplaySpeed: 3000, // Tốc độ chuyển slide (ms)
+        arrows: false, // Ẩn nút điều hướng
+    }
+
     return (
-        <div className={"w-full max-w-4xl mx-auto"}>
-            <h2 className="text-2xl font-bold text-center mb-6">DANH MỤC NỔI BẬT</h2>
-            <Swiper
-                modules={[Navigation]}
-                navigation
-                spaceBetween={25}
-                slidesPerView={2}
-                className={"category-slider"}
-            >
+        <div className={"mt-2 w-full m-auto"}>
+            <Slider {...settings}>
                 {categories.map((category, index) => (
-                    <SwiperSlide key={index}>
-                        <div className={"flex flex-col items-center"}>
-                            <img
-                                src={category.url}
-                                alt={category.name}
-                                className={"w-24 h-24 object-contain rounded-full p-2"}
-                            />
-                            <span className={"text-center text-lg font-medium mt-2"}>
-                                {category.name}
-                            </span>
-                        </div>
-                    </SwiperSlide>
+                    <div key={index} className={"flex flex-col items-center"}>
+                        <img src={category.url} alt={category.name} className={"w-1/2"}/>
+                        <span className={"text-center text-sm font-xl mt-3"}>{category.name}</span>
+                    </div>
                 ))}
-            </Swiper>
+            </Slider>
         </div>
     )
 }
