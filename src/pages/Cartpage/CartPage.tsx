@@ -205,7 +205,7 @@ const CartPage: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className="bg-white min-h-screen">
             <Header />
 
             <div className="bg-gray-100 px-4 py-2 text-sm text-gray-600 mb-4">
