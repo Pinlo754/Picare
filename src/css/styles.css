@@ -1,0 +1,31 @@
+.progress-container {
+    margin-top: 5px;
+    width: 100%; /* Chiều rộng toàn phần */
+    background-color: #fedfe2;
+    border-radius: 20px; /* Bo tròn container */
+    overflow: hidden; /* Ẩn phần tràn */
+    position: relative;
+    height: 20px; /* Chiều cao thanh */
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+.progress-label {
+    position: absolute; /* Căn nội dung ở giữa container */
+    top: 50%; /* Đẩy xuống giữa chiều cao */
+    left: 50%; /* Đẩy sang giữa chiều rộng */
+    transform: translate(-50%, -50%); /* Căn giữa hoàn toàn */
+    color: black; /* Màu chữ */
+    font-size: 12px; /* Kích thước chữ */
+    z-index: 1; /* Đảm bảo nằm trên thanh tiến trình */
+    pointer-events: none; /* Không ảnh hưởng khi click vào */
+    text-align: center;
+    white-space: nowrap;
+}
+/* Thanh tiến trình */
+.progress-bar {
+    height: 100%; /* Độ cao full container */
+    background: linear-gradient(to right, #eb395f, #fabad3); /* Gradient màu */
+
+    border-radius: 20px; /* Bo góc */
+    transition: width 0.4s ease; /* Hiệu ứng mượt khi thay đổi chiều rộng */
+}

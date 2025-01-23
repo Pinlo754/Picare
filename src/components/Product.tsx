@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import './style.css'
+import AddIcon from '@mui/icons-material/Add';
 
 const Product = (props: any) => {
     let brand: string = props.brand;
@@ -32,7 +32,9 @@ const Product = (props: any) => {
                     </div>
                 </div>
                 <button
-                    className={"absolute right-4 bottom-9 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold"}>+</button>
+                    className={"absolute left-3/4 bottom-7 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold"}>
+                    <AddIcon/>
+                </button>
             </div>
         </>
     );
