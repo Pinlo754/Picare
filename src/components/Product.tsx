@@ -32,7 +32,7 @@ const Product = (props: any) => {
                     </div>
                 </div>
                 <button
-                    className={"absolute left-3/4 bottom-7 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold"}>
+                    className={"absolute left-3/4 bottom-10 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold"}>
                     <AddIcon/>
                 </button>
             </div>

@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faPhone, faMessage, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "zmp-ui";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
@@ -16,6 +18,7 @@ const Header = () => {
     'Tìm theo màu sắc...',
   ];
 
+  const navigate = useNavigate();
   useEffect(() => {
     const handleTypingEffect = () => {
       const currentPlaceholder = placeholders[placeholderIndex];
@@ -138,7 +141,7 @@ const Header = () => {
                             </a>
                           </div>
                         </li>
-                        <div className="flex gap-4 pt-6 pl-4">
+                        <div className="flex gap-4 pt-6 pl-4" onClick={() => navigate('/contact')}>
                           <div className="">
                             <img
                               className="img-fluid "
@@ -150,7 +153,7 @@ const Header = () => {
                           </div>
                           <a
                             className="link"
-                            href="https://shopduocmypham.com/pages/cong-ty-tnhh-picare-viet-nam"
+                            href="/contact"
                             title="Liên hệ "
                           >
                             Liên hệ{" "}
