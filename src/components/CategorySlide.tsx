@@ -21,9 +21,8 @@ const CategorySlide = () => {
             <h2 className="text-2xl font-bold text-center mb-6">DANH MỤC NỔI BẬT</h2>
             <Swiper
                 modules={[Navigation]}
-                navigation
                 spaceBetween={25}
-                slidesPerView={2}
+                slidesPerView={4}
                 className={"category-slider"}
             >
                 {categories.map((category, index) => (
@@ -34,7 +33,7 @@ const CategorySlide = () => {
                                 alt={category.name}
                                 className={"w-24 h-24 object-contain rounded-full p-2"}
                             />
-                            <span className={"text-center text-lg font-medium mt-2"}>
+                            <span className={"text-center text-sm font-medium mt-2"}>
                                 {category.name}
                             </span>
                         </div>
