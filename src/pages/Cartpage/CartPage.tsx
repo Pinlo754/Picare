@@ -1,81 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { normalizeCartData } from '../../utils/normalizeCart';
-import { getAccessToken } from 'zmp-sdk';
+import React from 'react';
 import CartItem from 'components/cart/CartItem';
 import InvoiceForm from 'components/cart/InvoiceForm';
-
-// Định nghĩa kiểu dữ liệu cho thông tin hóa đơn
-interface InvoiceInfo {
-    companyName: string;
-    taxCode: string;
-    address: string;
-    email: string;
-}
+import { useCart } from '../../hooks/useCart';
 
 // Component hiển thị giỏ hàng
 const CartPage: React.FC = () => {
-    const [cartData, setCartData] = useState<any>(null);
-    const [error, setError] = useState<string | null>(null);
-    // Trạng thái checkbox "Xuất hóa đơn"
-    const [isInvoiceChecked, setIsInvoiceChecked] = useState<boolean>(false);
-
-    // Trạng thái dữ liệu hóa đơn
-    const [invoiceInfo, setInvoiceInfo] = useState<InvoiceInfo>({
-        companyName: "",
-        taxCode: "",
-        address: "",
-        email: "",
-    });
-
-    const [isConfirmPopupVisible, setIsConfirmPopupVisible] = useState<boolean>(false);
-
-    // Hiển thị popup khi bấm nút Thanh toán
-    function handlePaymentClick(e: React.FormEvent) {
-        e.preventDefault();
-        if (isInvoiceChecked) {
-            if (!validateInvoiceInfo()) return;
-            setIsConfirmPopupVisible(true);
-        } else {
-            handleSubmit(e);
-        }
-    }
-
-    // Đóng popup khi bấm "Kiểm tra lại"
-    function handleClosePopup() {
-        setIsConfirmPopupVisible(false);
-    }
-
-    useEffect(() => {
-        // Hàm gọi API lấy dữ liệu giỏ hàng
-        function fetchCartData() {
-            getAccessToken().then(accessToken => {
-                fetch('https://shopduocmypham.com/cart.js', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'zalo-access-token': `Bearer ${accessToken}`,
-                    },
-                    credentials: 'include'  // Giữ đăng nhập session khi gọi API
-                })
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Lỗi khi lấy dữ liệu từ API');
-                        }
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        setCartData(normalizeCartData(data));
-                    })
-                    .catch(function (error) {
-                        setError('Không thể tải dữ liệu giỏ hàng, vui lòng tải lại trang hoặc liên hệ để được hỗ trợ nhé!');
-                        console.error('Lỗi:', error);
-                    })
-            }).catch((error) => {
-                console.error('Lỗi khi lấy access token:', error);
-            });
-        }
-        fetchCartData();
-    }, []);
+    const {
+        cartData,
+        error,
+        isInvoiceChecked,
+        isConfirmPopupVisible,
+        invoiceInfo,
+        handleQuantityChange,
+        handleCheckboxChange,
+        handleInputChange,
+        handlePaymentClick,
+        handleClosePopup,
+        handleSubmit,
+    } = useCart();
 
     if (error)
         return (
@@ -91,127 +33,6 @@ const CartPage: React.FC = () => {
                 </div>
             </div>
         );
-
-    const updateQuantity = function (product_id: number, quantity: number) {
-        getAccessToken().then(accessToken => {
-            fetch('https://shopduocmypham.com/cart/change.js', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'zalo-access-token': `Bearer ${accessToken}`,
-                },
-                credentials: 'include',
-                body: JSON.stringify({ id: product_id, quantity })
-            })
-                .then(function () {
-                    return fetch('https://shopduocmypham.com/cart.js');
-                })
-                .then(function (updatedCart) {
-                    return updatedCart.json();
-                })
-                .then(function (data) {
-                    setCartData(normalizeCartData(data));
-                })
-                .catch(function (error) {
-                    console.error('Lỗi cập nhật giỏ hàng:', error);
-                });
-        });
-    };
-
-    const handleQuantityChange = function (product_id: number, newQuantity: number) {
-        if (newQuantity < 1) {
-            newQuantity = 1;
-        }
-        updateQuantity(product_id, newQuantity);
-    };
-
-    // Xử lý thay đổi checkbox "Xuất hóa đơn"
-    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsInvoiceChecked(e.target.checked);
-    };
-
-    // Xử lý nhập liệu vào form hóa đơn
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setInvoiceInfo({ ...invoiceInfo, [name]: value });
-    };
-
-    const validateInvoiceInfo = (): boolean => {
-        if (!invoiceInfo.companyName || !invoiceInfo.taxCode || !invoiceInfo.address || !invoiceInfo.email) {
-            alert("Vui lòng điền đầy đủ thông tin hóa đơn.");
-            return false;
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(invoiceInfo.email)) {
-            alert("Email không hợp lệ!");
-            return false;
-        }
-        return true;
-    };
-
-    const handleSubmit = function (e: React.FormEvent) {
-        e.preventDefault();
-
-        if (isInvoiceChecked && !validateInvoiceInfo()) return;
-
-        interface CartItem {
-            id: number;
-            title: string;
-            price: number;
-            line_price: number,
-            quantity: number;
-            image?: string;
-            url?: string;
-        }
-
-        getAccessToken().then(function (accessToken) {
-            var checkoutData = {
-                ...cartData,
-                total_price: cartData.total_price / 100,
-                attributes: isInvoiceChecked
-                    ? {
-                        "Xuất hóa đơn": "có",
-                        "Tên công ty": invoiceInfo.companyName,
-                        "Mã số thuế": invoiceInfo.taxCode,
-                        "Địa chỉ công ty": invoiceInfo.address,
-                        "Email nhận hóa đơn": invoiceInfo.email
-                    }
-                    : null,
-                items: cartData.items.map(function (item: CartItem) {
-                    return {
-                        id: item.id,
-                        title: item.title,
-                        price: item.price / 100,
-                        line_price: item.line_price / 100,
-                        quantity: item.quantity
-                    };
-                })
-            };
-
-            fetch("https://shopduocmypham.com/checkouts.js", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "zalo-access-token": "Bearer " + accessToken
-                },
-                credentials: 'include',
-                body: JSON.stringify(checkoutData)
-            })
-                .then(function (response) {
-                    if (!response.ok) throw new Error("Lỗi khi gửi dữ liệu giỏ hàng.");
-                    return response.json();
-                })
-                .then(function (result) {
-                    window.location.href = `https://shopduocmypham.com/checkouts/${result.checkout_session_id}`;
-                })
-                .catch(function (error) {
-                    alert("Chuyển trang thất bại. Vui lòng thử lại.");
-                    console.error("Lỗi:", error);
-                });
-        }).catch(function (error) {
-            alert("Không thể lấy access token. Vui lòng thử lại.");
-            console.error("Lỗi:", error);
-        });
-    };
 
     return (
         <div className="bg-white min-h-screen text-gray-800 mx-auto">
@@ -232,7 +53,7 @@ const CartPage: React.FC = () => {
                             <CartItem
                                 key={product.id}
                                 product={product}
-                                updateQuantity={updateQuantity}
+                                updateQuantity={handleQuantityChange}
                                 handleQuantityChange={handleQuantityChange}
                             />
                         ))}
